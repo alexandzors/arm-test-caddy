@@ -22,7 +22,7 @@ jobs:
             
             - name: Pull Local Repo
               uses: actions/checkout@v3
-              
+
             - name: Build Test Binary
               run: |
                 bash build.sh
@@ -31,14 +31,14 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                 context: amd64/
-                push: false
+                load: true
                 tags: alexandzors/caddy:latest
             
             - name: Build Containers
               uses: docker/build-push-action@v5
               with:
                 context: arm64/
-                push: false
+                load: true
                 tags: alexandzors/caddy:latest-arm64
                 
             - name: Inspect
