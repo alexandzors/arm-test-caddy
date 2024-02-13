@@ -1,0 +1,44 @@
+name: Arm Test
+on: workflow_dispatch
+jobs:
+    build-release:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup QEMU
+              uses: docker/setup-qemu-actions@v3
+              with:
+                platoforms: 'arm64,amd64'
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Setup Go
+              uses: actions/setup-go@v3
+              with:
+                go-version: '1.21'
+            
+            - name: Get xcaddy tool
+              run: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+            
+            - name: Build Test Binary
+              run: |
+                bash build.sh
+            
+            - name: Build Containers
+              uses: docker/build-push-action@v5
+              with:
+                context: amd64/
+                push: false
+                tags: alexandzors/caddy:latest
+            
+            - name: Build Containers
+              uses: docker/build-push-action@v5
+              with:
+                context: arm64/
+                push: false
+                tags: alexandzors/caddy:latest-arm64
+                
+            - name: Inspect
+              run: |
+                docker buildx imagetools inspect alexandzors/caddy:latest-arm64
+                docker buildx imagetools inspect alexandzors/caddy:latest
