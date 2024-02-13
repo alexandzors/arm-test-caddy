@@ -20,6 +20,9 @@ jobs:
             - name: Get xcaddy tool
               run: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
             
+            - name: Pull Local Repo
+              uses: actions/checkout@v3
+              
             - name: Build Test Binary
               run: |
                 bash build.sh
